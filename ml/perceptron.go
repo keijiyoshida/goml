@@ -19,14 +19,13 @@ func (p *Perceptron) Fit(x [][]float64, y []float64) {
 		numError := 0
 
 		for j := 0; j < len(x); j++ {
-			d := p.eta * (y[i] - p.Predict(x[i]))
+			d := p.eta * (y[j] - p.Predict(x[j]))
 
 			p.W[0] += d
 
 			for k := 0; k < len(x[0]); k++ {
-				p.W[k+1] += d * x[i]
+				p.W[k+1] += d * x[j][k]
 			}
-
 			if d != 0 {
 				numError++
 			}
@@ -37,10 +36,18 @@ func (p *Perceptron) Fit(x [][]float64, y []float64) {
 }
 
 // Predict predicts a labeled value and returns it.
-func (p *Perceptron) Predict(x []float64) int {
+func (p *Perceptron) Predict(x []float64) float64 {
 	if vector.DotProduct(x, p.W[1:])+p.W[0] >= 0.0 {
-		return 1
-	} else {
-		return -1
+		return 1.0
+	}
+
+	return -1.0
+}
+
+// NewPerceptron creates and returns a perceptron.
+func NewPerceptron(eta float64, numIter int) *Perceptron {
+	return &Perceptron{
+		eta:     eta,
+		numIter: numIter,
 	}
 }
